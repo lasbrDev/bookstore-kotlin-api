@@ -1,10 +1,10 @@
-package com.lasbr.bookstore.domain
+package com.lasbr.bookstore.domain.entities
 
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "books")
-data class Book(
+data class BookEntity(
     @Id
     @Column(name = "isbn", length = 19)
     var isbn: String,
@@ -20,5 +20,5 @@ data class Book(
 
     @ManyToOne(cascade = [CascadeType.MERGE])
     @JoinColumn(name = "author_id")
-    var author: Author?
+    var authorEntity: AuthorEntity?
 )
