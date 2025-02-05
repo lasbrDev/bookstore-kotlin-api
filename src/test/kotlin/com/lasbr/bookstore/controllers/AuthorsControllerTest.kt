@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.lasbr.bookstore.domain.dto.AuthorDto
 import com.lasbr.bookstore.domain.entities.AuthorEntity
 import com.lasbr.bookstore.services.AuthorService
+import com.lasbr.bookstore.testAuthorDtoA
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.verify
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -41,13 +41,7 @@ class AuthorsControllerTest @Autowired constructor (
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
-                AuthorDto(
-                    id = null,
-                    name = "John Doe",
-                    age = 30,
-                    image = "author-image.jpeg",
-                    description = "some description"
-                )
+                testAuthorDtoA()
             )
         }
         val expected = AuthorEntity(
@@ -55,7 +49,7 @@ class AuthorsControllerTest @Autowired constructor (
             name = "John Doe",
             age = 30,
             image = "author-image.jpeg",
-            description = "some description"
+            description = "Some Description"
         )
         verify{ authorService.save(expected) }
     }
@@ -66,13 +60,7 @@ class AuthorsControllerTest @Autowired constructor (
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
-                AuthorDto(
-                    id = null,
-                    name = "John Doe",
-                    age = 30,
-                    image = "author-image.jpeg",
-                    description = "some description"
-                )
+                testAuthorDtoA()
             )
         }.andExpect {
             status { isCreated() }
