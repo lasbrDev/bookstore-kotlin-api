@@ -15,7 +15,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+
+private const val AUTHORS_BASE_URL = "/authors"
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -36,8 +39,8 @@ class AuthorsControllerTest @Autowired constructor (
     }
 
     @Test
-    fun `test that create Author sabes the Author`(){
-        mockMvc.post("/authors") {
+    fun `test that create Author saVes the Author`(){
+        mockMvc.post(AUTHORS_BASE_URL) {
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
@@ -56,7 +59,7 @@ class AuthorsControllerTest @Autowired constructor (
 
     @Test
     fun `test that create Author returns a HTTP 201 status on a successful create`() {
-        mockMvc.post("/authors") {
+        mockMvc.post(AUTHORS_BASE_URL) {
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
             content = objectMapper.writeValueAsString(
@@ -64,6 +67,23 @@ class AuthorsControllerTest @Autowired constructor (
             )
         }.andExpect {
             status { isCreated() }
+        }
+    }
+
+    @Test
+    fun `test that list returns an empty list and HTTP 200 when no authors in the database`() {
+        every {
+            authorService.list()
+        } answers {
+            emptyList()
+        }
+
+        mockMvc.get(AUTHORS_BASE_URL) {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+            content { json("[]") }
         }
     }
 }
