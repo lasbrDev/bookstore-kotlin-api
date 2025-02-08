@@ -24,4 +24,18 @@ class AuthorServiceImplTest @Autowired constructor(
             testAuthorEntityA(id = savedAuthor.id)
         )
     }
+
+    @Test
+    fun `test that list returns empty list when no authors in the database`() {
+        val result = underTest.list()
+        assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun `test that list returns authors when authors present in the database`() {
+        val savedAuthor = authorRepository.save(testAuthorEntityA())
+        val expected = listOf(savedAuthor)
+        val result = underTest.list()
+        assertThat(result).isEqualTo(expected)
+    }
 }
