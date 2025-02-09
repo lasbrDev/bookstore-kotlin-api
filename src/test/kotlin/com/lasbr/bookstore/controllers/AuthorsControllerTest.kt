@@ -122,4 +122,24 @@ class AuthorsControllerTest @Autowired constructor (
             status { isNotFound() }
         }
     }
+
+    @Test
+    fun `test that get returns HTTP 200 and author when author found in database`() {
+        every {
+            authorService.get(any())
+        } answers {
+            testAuthorEntityA(id = 999)
+        }
+
+        mockMvc.get("${AUTHORS_BASE_URL}/999") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+            content { jsonPath("$.id", equalTo(999)) }
+            content { jsonPath("$.name", equalTo("John Doe")) }
+            content { jsonPath("$.age", equalTo(30)) }
+            content { jsonPath("$.description", equalTo("Some Description")) }
+            content { jsonPath("$.image", equalTo("author-image.jpeg")) } }
+    }
 }
