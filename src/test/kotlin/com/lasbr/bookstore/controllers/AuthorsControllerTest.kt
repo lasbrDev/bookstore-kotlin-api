@@ -106,4 +106,20 @@ class AuthorsControllerTest @Autowired constructor (
             content { jsonPath("$[0].image", equalTo("author-image.jpeg")) }
         }
     }
+
+    @Test
+    fun `test that get returns HTTP 404 when author not found in database`() {
+        every {
+            authorService.get(any())
+        } answers {
+            null
+        }
+
+        mockMvc.get("${AUTHORS_BASE_URL}/999") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isNotFound() }
+        }
+    }
 }
