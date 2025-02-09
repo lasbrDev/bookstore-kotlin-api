@@ -6,11 +6,7 @@ import com.lasbr.bookstore.toAuthorDto
 import com.lasbr.bookstore.toAuthorEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/authors")
@@ -26,8 +22,15 @@ class AuthorsController(private val authorService: AuthorService) {
 
     @GetMapping
     fun readManyAuthor(): List<AuthorDto> {
-        return authorService.list().map { it.toAuthorDto()}
+        return authorService.list().map { it.toAuthorDto() }
 
     }
 
+    @GetMapping(path = ["/{id}"])
+    fun readOneAuthor(@PathVariable id: Int): ResponseEntity<AuthorDto> {
+        val foundAuthor = authorService.get(id)?.toAuthorDto()
+        return foundAuthor?.let {
+            ResponseEntity(it, HttpStatus.OK)
+        } ?: ResponseEntity(HttpStatus.NOT_FOUND)
+    }
 }
