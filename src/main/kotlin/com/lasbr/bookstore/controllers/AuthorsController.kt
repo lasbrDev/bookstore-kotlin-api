@@ -14,10 +14,14 @@ class AuthorsController(private val authorService: AuthorService) {
 
     @PostMapping
     fun createAuthor(@RequestBody authorDto: AuthorDto): ResponseEntity<AuthorDto> {
-        val createdAuthor = authorService.save(
-            authorDto.toAuthorEntity()
-        ).toAuthorDto()
-        return ResponseEntity(createdAuthor, HttpStatus.CREATED)
+        return try {
+            val createdAuthor = authorService.create(
+                authorDto.toAuthorEntity()
+            ).toAuthorDto()
+            ResponseEntity(createdAuthor, HttpStatus.CREATED)
+        } catch (ex: IllegalArgumentException) {
+            ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
     }
 
     @GetMapping
@@ -32,5 +36,15 @@ class AuthorsController(private val authorService: AuthorService) {
         return foundAuthor?.let {
             ResponseEntity(it, HttpStatus.OK)
         } ?: ResponseEntity(HttpStatus.NOT_FOUND)
+    }
+
+    @PutMapping(path = ["/{id}"])
+    fun fullUpdateAuthor(@PathVariable("id") id: Int, @RequestBody authorDto: AuthorDto): ResponseEntity<AuthorDto> {
+        return try {
+            val updateAuthor = authorService.fullUpdate(id, authorDto.toAuthorEntity())
+            ResponseEntity(updateAuthor.toAuthorDto(), HttpStatus.OK)
+        } catch (ex: IllegalArgumentException) {
+            ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
     }
 }
