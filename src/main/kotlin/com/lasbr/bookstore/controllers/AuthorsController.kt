@@ -43,7 +43,7 @@ class AuthorsController(private val authorService: AuthorService) {
         return try {
             val updateAuthor = authorService.fullUpdate(id, authorDto.toAuthorEntity())
             ResponseEntity(updateAuthor.toAuthorDto(), HttpStatus.OK)
-        } catch (ex: IllegalArgumentException) {
+        } catch (ex: IllegalStateException) {
             ResponseEntity(HttpStatus.BAD_REQUEST)
         }
     }
