@@ -1,5 +1,6 @@
 package com.lasbr.bookstore.services.impl
 
+import com.lasbr.bookstore.domain.AuthorUpdateRequest
 import com.lasbr.bookstore.domain.entities.AuthorEntity
 import com.lasbr.bookstore.repositories.AuthorRepository
 import com.lasbr.bookstore.services.AuthorService
@@ -27,5 +28,20 @@ class AuthorServiceImpl(private val authorRepository: AuthorRepository): AuthorS
         check(authorRepository.existsById(id)) { "Not found with id: $id" }
         val normalisedAuthor = authorEntity.copy(id = id)
         return authorRepository.save(normalisedAuthor)
+    }
+
+    @Transactional
+    override fun partialUpdate(id: Int, authorUpdate: AuthorUpdateRequest): AuthorEntity {
+        val existingAuthor = authorRepository.findByIdOrNull(id)
+        checkNotNull(existingAuthor)
+
+        val updateAuthor = existingAuthor.copy(
+            name = authorUpdate.name ?: existingAuthor.name,
+            age = authorUpdate.age ?: existingAuthor.age,
+            description = authorUpdate.description ?: existingAuthor.description,
+            image = authorUpdate.image ?: existingAuthor.image
+        )
+
+        return authorRepository.save(updateAuthor)
     }
 }

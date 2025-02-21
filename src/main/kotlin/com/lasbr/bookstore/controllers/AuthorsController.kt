@@ -1,9 +1,11 @@
 package com.lasbr.bookstore.controllers
 
 import com.lasbr.bookstore.domain.dto.AuthorDto
+import com.lasbr.bookstore.domain.dto.AuthorUpdateRequestDto
 import com.lasbr.bookstore.services.AuthorService
 import com.lasbr.bookstore.toAuthorDto
 import com.lasbr.bookstore.toAuthorEntity
+import com.lasbr.bookstore.toAuthorUpdateRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -42,6 +44,18 @@ class AuthorsController(private val authorService: AuthorService) {
     fun fullUpdateAuthor(@PathVariable("id") id: Int, @RequestBody authorDto: AuthorDto): ResponseEntity<AuthorDto> {
         return try {
             val updateAuthor = authorService.fullUpdate(id, authorDto.toAuthorEntity())
+            ResponseEntity(updateAuthor.toAuthorDto(), HttpStatus.OK)
+        } catch (ex: IllegalStateException) {
+            ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @PatchMapping(path = ["/{id}"])
+    fun partialUpdateAuthor(
+        @PathVariable("id") id: Int,
+        @RequestBody authorUpdateRequest: AuthorUpdateRequestDto): ResponseEntity<AuthorDto> {
+        return try {
+            val updateAuthor = authorService.partialUpdate(id, authorUpdateRequest.toAuthorUpdateRequest())
             ResponseEntity(updateAuthor.toAuthorDto(), HttpStatus.OK)
         } catch (ex: IllegalStateException) {
             ResponseEntity(HttpStatus.BAD_REQUEST)
