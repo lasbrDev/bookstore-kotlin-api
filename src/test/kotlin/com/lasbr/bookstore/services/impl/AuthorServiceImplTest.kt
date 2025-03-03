@@ -1,9 +1,11 @@
 package com.lasbr.bookstore.services.impl
 
+import com.lasbr.bookstore.domain.AuthorUpdateRequest
 import com.lasbr.bookstore.domain.entities.AuthorEntity
 import com.lasbr.bookstore.repositories.AuthorRepository
 import com.lasbr.bookstore.testAuthorEntityA
 import com.lasbr.bookstore.testAuthorEntityB
+import com.lasbr.bookstore.testAuthorUpdateRequestA
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -90,4 +92,21 @@ class AuthorServiceImplTest @Autowired constructor(
             underTest.fullUpdate(nonExistingAuthorId, updateAuthor)
         }
     }
+
+    @Test
+    fun `test that partial update Author throws IllegalStateException when Author does not exist in the database`() {
+        assertThrows<IllegalStateException> {
+            val nonExistingAuthorId = 999
+            val updateRequest = testAuthorUpdateRequestA(id = nonExistingAuthorId)
+            underTest.partialUpdate(nonExistingAuthorId, updateRequest)
+        }
+    }
+
+    @Test
+    fun `test that partial update Author does not update Author when all values are null`() {
+        val existingAuthor = authorRepository.save(testAuthorEntityA())
+        val updatedAuthor = underTest.partialUpdate(existingAuthor.id!!, AuthorUpdateRequest())
+        assertThat(updatedAuthor).isEqualTo(existingAuthor)
+    }
+
 }
