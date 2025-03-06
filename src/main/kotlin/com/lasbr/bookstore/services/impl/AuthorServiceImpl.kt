@@ -44,4 +44,8 @@ class AuthorServiceImpl(private val authorRepository: AuthorRepository): AuthorS
 
         return authorRepository.save(updateAuthor)
     }
+
+    override fun delete(id: Int) {
+        authorRepository.deleteById(id)
+    }
 }
