@@ -20,5 +20,5 @@ data class BookEntity(
 
     @ManyToOne(cascade = [CascadeType.MERGE])
     @JoinColumn(name = "author_id")
-    var authorEntity: AuthorEntity?
+    var authorEntity: AuthorEntity
 )
